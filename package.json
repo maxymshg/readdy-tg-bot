@@ -1,0 +1,25 @@
+{
+  "name": "readdy-bot",
+  "version": "1.0.0",
+  "description": "A telegram bot for the Readdy project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "readdy"
+  ],
+  "author": "Maksym Shekhovets",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.9.0",
+    "@aws-sdk/client-s3": "^3.9.0",
+    "@mozilla/readability": "^0.4.1",
+    "axios": "^0.21.1",
+    "get-stream": "^4.1.0",
+    "jsdom": "^16.5.1",
+    "telegraf": "^4.1.1"
+  }
+}
