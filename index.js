@@ -1,4 +1,3 @@
-const getStream = require('get-stream');
 const { Telegraf } = require("telegraf");
 const { Readability } = require("@mozilla/readability");
 const axios = require("axios").default;
@@ -16,6 +15,10 @@ const s3 = new S3Client({ region: "eu-west-2" });
 const token = process.env.BOT_TOKEN;
 if (token === undefined) {
   throw new Error("BOT_TOKEN must be provided!");
+}
+const voiceId = process.env.POLLY_VOICE_ID;
+if (voiceId === undefined) {
+  throw new Error("POLLY_VOICE_ID must be provided!");
 }
 
 const getReaderView = async (url) => {
@@ -40,7 +43,7 @@ const startSpeechTask = async (text) => {
     const command = new StartSpeechSynthesisTaskCommand({
       Text: text,
       OutputFormat: "mp3",
-      VoiceId: "Amy",
+      VoiceId: voiceId,
       OutputS3BucketName: "readdy-voice-content",
     });
     const data = await pollyClient.send(command);
@@ -98,8 +101,7 @@ const downloadFileFromS3 = async (key) => {
 const bot = new Telegraf(token, {});
 
 bot.start((ctx) => {
-  console.log("START", JSON.stringify(ctx));
-  ctx.reply("Hello");
+  ctx.reply(`Hello, I am Readdy and I can read web article for you. Just send me the link and I will reply you with mp3 file. Have a great listening!`);
 });
 
 bot.on("message", async (ctx) => {
@@ -118,9 +120,7 @@ bot.on("message", async (ctx) => {
       ctx.reply(`Oops, issues....`);
       return;
     }
-    ctx.replyWithAudio({ source: fileData.Body, filename: `${rv.title}.mp3` });
-    // console.log('DONE :', JSON.stringify(taskId));
-    // ctx.reply(`Done!`);
+    return await ctx.replyWithAudio({ source: fileData.Body, filename: `${rv.title}.mp3` });
   } catch (err) {
     console.log("ERR :", JSON.stringify(err));
     ctx.reply(`Oops, I'm crashed!`);
